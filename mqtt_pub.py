@@ -2,9 +2,8 @@
 
 import random
 import time
-
+import csv
 from paho.mqtt import client as mqtt_client
-
 
 broker = 'localhost'
 port = 1883
@@ -30,18 +29,17 @@ def connect_mqtt():
 
 def publish(client):
     msg_count = 0
-    while True:
-        time.sleep(1)
-        msg = f"messages: {msg_count}"
-        result = client.publish(topic, msg)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-        msg_count += 1
-
+    a=""
+    with open('example_data.csv','r') as file:
+        example = csv.reader(file)
+        for row in example:
+            result = client.publish(topic,a.join(row))
+            status = result[0]
+            if status == 0:
+                print(f"Send `{row}` to topic `{topic}`")
+            else:
+                print(f"Failed to send message to topic {topic}")
+            msg_count += 1
 
 def run():
     client = connect_mqtt()

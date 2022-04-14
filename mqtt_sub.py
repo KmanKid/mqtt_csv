@@ -1,7 +1,7 @@
 # python3.6
 
 import random
-
+import csv
 from paho.mqtt import client as mqtt_client
 
 
@@ -12,7 +12,6 @@ topic = "python/mqtt"
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 username = 'kuehnemann'
 password = 'public'
-
 
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
@@ -31,6 +30,11 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        row = msg.payload.decode()
+        #row = row.split(';')
+        # opening the csv file in 'a+' mode
+        file = open('result.csv', 'a+')    
+        file.write(row+"\n")
 
     client.subscribe(topic)
     client.on_message = on_message
